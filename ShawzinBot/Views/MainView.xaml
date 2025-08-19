@@ -13,197 +13,291 @@
         TextElement.FontSize="14"
         FontFamily="pack://application:,,,/MaterialDesignThemes.Wpf;component/Resources/Roboto/#Roboto"
         mc:Ignorable="d"
-        ResizeMode="NoResize"
+        ResizeMode="CanResize"
         WindowStartupLocation="CenterScreen"
         WindowStyle="None"
-        Title="MainView" Height="510" Width="300">
+        Title="ShawzinBot" Height="700" Width="900"
+        MinHeight="600" MinWidth="800">
+    
+    <Window.Resources>
+        <LinearGradientBrush x:Key="OrangeGradient" StartPoint="0.5,0" EndPoint="0.5,1">
+            <GradientStop Color="#FFD69016"/>
+            <GradientStop Color="#FFD6511E" Offset="0.757"/>
+            <GradientStop Color="#FF9B330D" Offset="0.807"/>
+        </LinearGradientBrush>
+        
+        <Style x:Key="OrangeButtonStyle" TargetType="Button" BasedOn="{StaticResource MaterialDesignFloatingActionMiniButton}">
+            <Setter Property="Background" Value="{x:Null}"/>
+            <Setter Property="BorderBrush" Value="{x:Null}"/>
+            <Setter Property="Foreground" Value="{StaticResource OrangeGradient}"/>
+        </Style>
+    </Window.Resources>
+    
     <Grid>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="20"/>
-            <ColumnDefinition Width="*"/>
-            <ColumnDefinition Width="20"/>
-        </Grid.ColumnDefinitions>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="30"/>
-            <RowDefinition Height="20"/>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="20"/>
-        </Grid.RowDefinitions>
-
-        <Grid Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="3">
-            <Button x:Name="OpenFile" HorizontalAlignment="Left" VerticalAlignment="Center" Width="20" Height="20" Margin="10,5" Style="{StaticResource MaterialDesignFloatingActionMiniButton}" Background="{x:Null}" BorderBrush="{x:Null}">
-                <materialDesign:PackIcon Kind="FolderOpen" Width="20" Height="20" HorizontalAlignment="Center" VerticalAlignment="Center">
-                    <materialDesign:PackIcon.Foreground>
-                        <LinearGradientBrush StartPoint="0.5,0" EndPoint="0.5,1" MappingMode="RelativeToBoundingBox">
-                            <GradientStop Color="#FFD69016"/>
-                            <GradientStop Color="#FFD6511E" Offset="0.757"/>
-                            <GradientStop Color="#FF9B330D" Offset="0.807"/>
-                        </LinearGradientBrush>
-                    </materialDesign:PackIcon.Foreground>
-                </materialDesign:PackIcon>
-            </Button>
-
-            <TextBlock Text="Shawzin Bot" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-
-            <Button x:Name="CloseProgram" Click="OnCloseProgram" HorizontalAlignment="Right" VerticalAlignment="Center" Width="20" Height="20" Margin="10,5" Style="{StaticResource MaterialDesignFloatingActionMiniButton}" Background="{x:Null}" BorderBrush="{x:Null}">
-                <materialDesign:PackIcon Kind="Close" Width="20" Height="20" HorizontalAlignment="Center" VerticalAlignment="Center">
-                    <materialDesign:PackIcon.Foreground>
-                        <LinearGradientBrush StartPoint="0.5,0" EndPoint="0.5,1" MappingMode="RelativeToBoundingBox">
-                            <GradientStop Color="#FFD69016"/>
-                            <GradientStop Color="#FFD6511E" Offset="0.757"/>
-                            <GradientStop Color="#FF9B330D" Offset="0.807"/>
-                        </LinearGradientBrush>
-                    </materialDesign:PackIcon.Foreground>
-                </materialDesign:PackIcon>
-            </Button>
-            <Button x:Name="MinimizeProgram" Click="OnMinimizeProgram" HorizontalAlignment="Right" VerticalAlignment="Center" Width="20" Height="20" Margin="40,5" Style="{StaticResource MaterialDesignFloatingActionMiniButton}" Background="{x:Null}" BorderBrush="{x:Null}">
-                <materialDesign:PackIcon Kind="Minus" Width="20" Height="20" HorizontalAlignment="Center" VerticalAlignment="Center">
-                    <materialDesign:PackIcon.Foreground>
-                        <LinearGradientBrush StartPoint="0.5,0" EndPoint="0.5,1" MappingMode="RelativeToBoundingBox">
-                            <GradientStop Color="#FFD69016"/>
-                            <GradientStop Color="#FFD6511E" Offset="0.757"/>
-                            <GradientStop Color="#FF9B330D" Offset="0.807"/>
-                        </LinearGradientBrush>
-                    </materialDesign:PackIcon.Foreground>
-                </materialDesign:PackIcon>
-            </Button>
-        </Grid>
-
-        <Grid Grid.Column="1" Grid.Row="2" VerticalAlignment="Top">
+        <!-- Title Bar -->
+        <Grid Grid.Row="0" Background="{StaticResource OrangeGradient}" Height="40">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
+            
+            <TextBlock Text="ShawzinBot" Grid.Column="0" 
+                       HorizontalAlignment="Left" VerticalAlignment="Center" 
+                       Margin="15,0" FontSize="18" FontWeight="Bold" 
+                       Foreground="White"/>
+            
+            <StackPanel Grid.Column="1" Orientation="Horizontal">
+                <Button x:Name="MinimizeProgram" Click="OnMinimizeProgram" 
+                        Width="40" Height="40" Style="{StaticResource OrangeButtonStyle}"
+                        Foreground="White">
+                    <materialDesign:PackIcon Kind="Minus" Width="20" Height="20"/>
+                </Button>
+                <Button x:Name="CloseProgram" Click="OnCloseProgram" 
+                        Width="40" Height="40" Style="{StaticResource OrangeButtonStyle}"
+                        Foreground="White">
+                    <materialDesign:PackIcon Kind="Close" Width="20" Height="20"/>
+                </Button>
+            </StackPanel>
+        </Grid>
+
+        <!-- Main Content -->
+        <Grid Grid.Row="1" Margin="20">
             <Grid.RowDefinitions>
-                <RowDefinition Height="0"/>
-                <RowDefinition Height="80"/>
-                <RowDefinition Height="40"/>
-                <RowDefinition Height="70"/>
-                <RowDefinition Height="120"/>
-                <RowDefinition Height="130"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
 
-            <Ellipse Grid.Row="0" Width="150" Height="150" HorizontalAlignment="Center" VerticalAlignment="Center" StrokeThickness="1">
-                <Ellipse.Stroke>
-                    <LinearGradientBrush StartPoint="0.5,0" EndPoint="0.5,1">
-                        <GradientStop Color="#FFD69016"/>
-                        <GradientStop Color="#FFD6511E" Offset="0.757"/>
-                        <GradientStop Color="#FF9B330D" Offset="0.807"/>
-                    </LinearGradientBrush>
-                </Ellipse.Stroke>
-                <Ellipse.Fill>
-                    <LinearGradientBrush StartPoint="0.5,0" EndPoint="0.5,1">
-                        <GradientStop Color="#19D69016"/>
-                        <GradientStop Color="#19D6511E" Offset="0.757"/>
-                        <GradientStop Color="#199B330D" Offset="0.807"/>
-                    </LinearGradientBrush>
-                </Ellipse.Fill>
-            </Ellipse>
-            <Grid Grid.Row="1" VerticalAlignment="Center">
-                <TextBlock x:Name="SongName" HorizontalAlignment="Center" VerticalAlignment="Top"/>
-                <Grid VerticalAlignment="Top" Margin="0,30,0,0">
-                    <Button x:Name="Previous" HorizontalAlignment="Left" VerticalAlignment="Center" Width="20" Height="20" Margin="30,0" Style="{StaticResource MaterialDesignFloatingActionMiniButton}" Background="{x:Null}" BorderBrush="{x:Null}">
-                        <materialDesign:PackIcon Kind="SkipPrevious" Width="20" Height="20" HorizontalAlignment="Center" VerticalAlignment="Center">
-                            <materialDesign:PackIcon.Foreground>
-                                <LinearGradientBrush StartPoint="0.5,0" EndPoint="0.5,1" MappingMode="RelativeToBoundingBox">
-                                    <GradientStop Color="#FFD69016"/>
-                                    <GradientStop Color="#FFD6511E" Offset="0.757"/>
-                                    <GradientStop Color="#FF9B330D" Offset="0.807"/>
-                                </LinearGradientBrush>
-                            </materialDesign:PackIcon.Foreground>
-                        </materialDesign:PackIcon>
-                    </Button>
-
-                    <Button x:Name="PlayPause" HorizontalAlignment="Center" VerticalAlignment="Center" Width="40" Height="40" Style="{StaticResource MaterialDesignFloatingActionMiniButton}" BorderBrush="#FFD6511E" Background="{x:Null}">
-                        <Button.Effect>
-                            <DropShadowEffect BlurRadius="15" Color="#FFD6511E" Direction="-90" RenderingBias="Quality" ShadowDepth="0"/>
-                        </Button.Effect>
-                        <materialDesign:PackIcon Kind="{Binding Path=PlayPauseIcon}" Width="40" Height="40" HorizontalAlignment="Center" VerticalAlignment="Center">
-                            <materialDesign:PackIcon.Foreground>
-                                <LinearGradientBrush StartPoint="0.5,0" EndPoint="0.5,1" MappingMode="RelativeToBoundingBox">
-                                    <GradientStop Color="#FFD69016"/>
-                                    <GradientStop Color="#FFD6511E" Offset="0.757"/>
-                                    <GradientStop Color="#FF9B330D" Offset="0.807"/>
-                                </LinearGradientBrush>
-                            </materialDesign:PackIcon.Foreground>
-                        </materialDesign:PackIcon>
-                    </Button>
-
-                    <Button x:Name="Next" HorizontalAlignment="Right" VerticalAlignment="Center" Width="20" Height="20" Margin="30,0" Style="{StaticResource MaterialDesignFloatingActionMiniButton}" Background="{x:Null}" BorderBrush="{x:Null}">
-                        <materialDesign:PackIcon Kind="SkipNext" Width="20" Height="20" HorizontalAlignment="Center" VerticalAlignment="Center">
-                            <materialDesign:PackIcon.Foreground>
-                                <LinearGradientBrush StartPoint="0.5,0" EndPoint="0.5,1" MappingMode="RelativeToBoundingBox">
-                                    <GradientStop Color="#FFD69016"/>
-                                    <GradientStop Color="#FFD6511E" Offset="0.757"/>
-                                    <GradientStop Color="#FF9B330D" Offset="0.807"/>
-                                </LinearGradientBrush>
-                            </materialDesign:PackIcon.Foreground>
-                        </materialDesign:PackIcon>
-                    </Button>
+            <!-- Import Section -->
+            <Border Grid.Row="0" BorderBrush="#44444444" BorderThickness="1" 
+                    Background="#22FFFFFF" CornerRadius="5" Padding="15" Margin="0,0,0,15">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    
+                    <StackPanel Grid.Column="0" Orientation="Vertical">
+                        <TextBlock Text="MIDI Library" FontSize="16" FontWeight="Bold" 
+                                   Margin="0,0,0,10"/>
+                        <TextBlock x:Name="CurrentFolder" Text="No folder selected" 
+                                   Foreground="#888888" Margin="0,0,0,5"/>
+                        <TextBlock Text="Select a folder to import MIDI files and create a playlist" 
+                                   Foreground="#666666" FontSize="12"/>
+                    </StackPanel>
+                    
+                    <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
+                        <Button x:Name="OpenFolder" Content="Open Folder" 
+                                Style="{StaticResource MaterialDesignRaisedButton}"
+                                Background="{StaticResource OrangeGradient}" 
+                                Foreground="White" Margin="0,0,10,0"/>
+                        <Button x:Name="OpenFile" Content="Open File" 
+                                Style="{StaticResource MaterialDesignOutlinedButton}"
+                                Foreground="{StaticResource OrangeGradient}"/>
+                    </StackPanel>
                 </Grid>
-            </Grid>
-            <Grid Grid.Row="2" VerticalAlignment="Center">
-                <TextBlock x:Name="CurrentTime" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="7,0"/>
+            </Border>
 
-                <Slider x:Name="SongSlider" VerticalAlignment="Center" HorizontalAlignment="Stretch" Margin="50,0,50,0" Orientation="Horizontal" Maximum="{Binding Path=MaximumTime}">
-                    <Slider.Foreground>
-                        <LinearGradientBrush StartPoint="0.5,0" EndPoint="0.5,1">
-                            <GradientStop Color="#FFFFFFFF"/>
-                            <GradientStop Color="#FF8F8F8F" Offset="0.807"/>
-                        </LinearGradientBrush>
-                    </Slider.Foreground>
-                </Slider>
+            <!-- Playlist and Player Section -->
+            <Grid Grid.Row="1">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="300"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
 
-                <TextBlock x:Name="TotalTime" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="7,0"/>
-            </Grid>
-            <Grid Grid.Row="3" VerticalAlignment="Center" Background="#44444444" Height="60">
-                <TextBlock Text="MIDI Input Device" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="10,5"/>
+                <!-- Playlist -->
+                <Border Grid.Column="0" BorderBrush="#44444444" BorderThickness="1" 
+                        Background="#22FFFFFF" CornerRadius="5" Margin="0,0,15,0">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+                        
+                        <TextBlock Grid.Row="0" Text="Playlist" FontSize="14" FontWeight="Bold" 
+                                   Margin="15,15,15,10"/>
+                        
+                        <ListBox Grid.Row="1" x:Name="MidiPlaylist" 
+                                 Background="Transparent" BorderThickness="0"
+                                 Margin="10,0,10,10">
+                            <ListBox.ItemTemplate>
+                                <DataTemplate>
+                                    <Border Background="#33FFFFFF" CornerRadius="3" 
+                                            Margin="0,2" Padding="10">
+                                        <Grid>
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="Auto"/>
+                                                <RowDefinition Height="Auto"/>
+                                                <RowDefinition Height="Auto"/>
+                                            </Grid.RowDefinitions>
+                                            
+                                            <TextBlock Grid.Row="0" Text="{Binding DisplayName}" 
+                                                       FontWeight="Bold" TextWrapping="Wrap"/>
+                                            
+                                            <TextBlock Grid.Row="1" Text="{Binding CompatibilityNotes}" 
+                                                       Foreground="#888888" FontSize="11" 
+                                                       TextWrapping="Wrap" Margin="0,3,0,0"/>
+                                            
+                                            <StackPanel Grid.Row="2" Orientation="Horizontal" 
+                                                        Margin="0,5,0,0">
+                                                <TextBlock Text="{Binding TrackCount}" 
+                                                           Foreground="#666666" FontSize="10"/>
+                                                <TextBlock Text=" tracks • " Foreground="#666666" FontSize="10"/>
+                                                <TextBlock Text="{Binding Duration}" 
+                                                           Foreground="#666666" FontSize="10"/>
+                                                <TextBlock Text="s" Foreground="#666666" FontSize="10"/>
+                                            </StackPanel>
+                                        </Grid>
+                                    </Border>
+                                </DataTemplate>
+                            </ListBox.ItemTemplate>
+                        </ListBox>
+                    </Grid>
+                </Border>
 
-                <Button x:Name="RefreshDevices" HorizontalAlignment="Right" VerticalAlignment="Bottom" Width="30" Height="30" Margin="50,8"  Style="{StaticResource MaterialDesignFloatingActionMiniButton}" Background="{x:Null}" BorderBrush="{x:Null}">
-                    <materialDesign:PackIcon Kind="Reload" Width="30" Height="30" HorizontalAlignment="Center" VerticalAlignment="Center">
-                        <materialDesign:PackIcon.Foreground>
-                            <LinearGradientBrush StartPoint="0.5,0" EndPoint="0.5,1" MappingMode="RelativeToBoundingBox">
-                                <GradientStop Color="#FFD69016"/>
-                                <GradientStop Color="#FFD6511E" Offset="0.757"/>
-                                <GradientStop Color="#FF9B330D" Offset="0.807"/>
-                            </LinearGradientBrush>
-                        </materialDesign:PackIcon.Foreground>
-                    </materialDesign:PackIcon>
-                </Button>
-                <ComboBox x:Name="MidiInputs" VerticalAlignment="Bottom" HorizontalAlignment="Left" Margin="10,8" Width="150" Height="30" Background="#FF444444"
-                          SelectedItem="{Binding Path=SelectedMidiInput, Mode=TwoWay}"
-                          DisplayMemberPath="DeviceName"/>
+                <!-- Player Controls -->
+                <Border Grid.Column="1" BorderBrush="#44444444" BorderThickness="1" 
+                        Background="#22FFFFFF" CornerRadius="5">
+                    <Grid Margin="15">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+
+                        <!-- Song Info -->
+                        <Grid Grid.Row="0" Margin="0,0,0,20">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            
+                            <StackPanel Grid.Column="0">
+                                <TextBlock x:Name="SongName" Text="No song selected" 
+                                           FontSize="18" FontWeight="Bold" Margin="0,0,0,5"/>
+                                <TextBlock Text="Select a MIDI file from the playlist to start playing" 
+                                           Foreground="#888888"/>
+                            </StackPanel>
+                            
+                            <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
+                                <Button x:Name="Previous" Style="{StaticResource OrangeButtonStyle}" 
+                                        Width="40" Height="40" Margin="0,0,10,0">
+                                    <materialDesign:PackIcon Kind="SkipPrevious" Width="24" Height="24"/>
+                                </Button>
+                                <Button x:Name="PlayPause" Style="{StaticResource MaterialDesignFloatingActionButton}" 
+                                        Width="60" Height="60" Background="{StaticResource OrangeGradient}" 
+                                        Foreground="White" Margin="0,0,10,0">
+                                    <materialDesign:PackIcon Kind="{Binding Path=PlayPauseIcon}" Width="32" Height="32"/>
+                                </Button>
+                                <Button x:Name="Next" Style="{StaticResource OrangeButtonStyle}" 
+                                        Width="40" Height="40">
+                                    <materialDesign:PackIcon Kind="SkipNext" Width="24" Height="24"/>
+                                </Button>
+                            </StackPanel>
+                        </Grid>
+
+                        <!-- Progress Bar -->
+                        <Grid Grid.Row="1" Margin="0,0,0,20">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            
+                            <TextBlock Grid.Column="0" x:Name="CurrentTime" Text="0:00" 
+                                       VerticalAlignment="Center" Margin="0,0,10,0"/>
+                            
+                            <Slider Grid.Column="1" x:Name="SongSlider" 
+                                    VerticalAlignment="Center" Maximum="{Binding Path=MaximumTime}">
+                                <Slider.Foreground>
+                                    <LinearGradientBrush StartPoint="0.5,0" EndPoint="0.5,1">
+                                        <GradientStop Color="#FFD69016"/>
+                                        <GradientStop Color="#FFD6511E" Offset="0.757"/>
+                                    </LinearGradientBrush>
+                                </Slider.Foreground>
+                            </Slider>
+                            
+                            <TextBlock Grid.Column="2" x:Name="TotalTime" Text="0:00" 
+                                       VerticalAlignment="Center" Margin="10,0,0,0"/>
+                        </Grid>
+
+                        <!-- MIDI Input Device -->
+                        <Border Grid.Row="2" Background="#44444444" CornerRadius="3" 
+                                Padding="15" Margin="0,0,0,15">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                
+                                <StackPanel Grid.Column="0">
+                                    <TextBlock Text="MIDI Input Device" FontWeight="Bold" Margin="0,0,0,5"/>
+                                    <ComboBox x:Name="MidiInputs" Width="200" HorizontalAlignment="Left"
+                                              SelectedItem="{Binding Path=SelectedMidiInput, Mode=TwoWay}"
+                                              DisplayMemberPath="DeviceName"/>
+                                </StackPanel>
+                                
+                                <Button Grid.Column="1" x:Name="RefreshDevices" 
+                                        Style="{StaticResource OrangeButtonStyle}" Width="40" Height="40">
+                                    <materialDesign:PackIcon Kind="Reload" Width="24" Height="24"/>
+                                </Button>
+                            </Grid>
+                        </Border>
+
+                        <!-- MIDI Tracks -->
+                        <Border Grid.Row="3" Background="#44444444" CornerRadius="3" 
+                                Padding="15" Margin="0,0,0,15">
+                            <StackPanel>
+                                <TextBlock Text="MIDI Tracks" FontWeight="Bold" Margin="0,0,0,10"/>
+                                <ScrollViewer MaxHeight="120" VerticalScrollBarVisibility="Auto">
+                                    <ItemsControl x:Name="MidiTracks">
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate>
+                                                <CheckBox x:Name="MidiTrack" Content="{Binding TrackName}" 
+                                                          IsChecked="{Binding IsChecked}" 
+                                                          Margin="0,2" Foreground="White"/>
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
+                                    </ItemsControl>
+                                </ScrollViewer>
+                            </StackPanel>
+                        </Border>
+
+                        <!-- Settings -->
+                        <Border Grid.Row="4" Background="#44444444" CornerRadius="3" Padding="15">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                
+                                <StackPanel Grid.Column="0">
+                                    <TextBlock Text="Settings" FontWeight="Bold" Margin="0,0,0,10"/>
+                                    <TextBlock x:Name="Scale" Text="Scale: Chromatic" Margin="0,0,0,5"/>
+                                    <CheckBox x:Name="EnableVibrato" Content="Enable vibrato" 
+                                              Margin="0,2" Foreground="White"/>
+                                    <CheckBox x:Name="TransposeNotes" Content="Transpose notes" 
+                                              Margin="0,2" Foreground="White"/>
+                                </StackPanel>
+                                
+                                <StackPanel Grid.Column="1">
+                                    <TextBlock Text="Playback Speed" FontWeight="Bold" Margin="0,0,0,10"/>
+                                    <ComboBox x:Name="MidiSpeeds" Width="120" HorizontalAlignment="Left"
+                                              SelectedItem="{Binding Path=SelectedMidiSpeed, Mode=TwoWay}"
+                                              DisplayMemberPath="SpeedName"/>
+                                </StackPanel>
+                            </Grid>
+                        </Border>
+                    </Grid>
+                </Border>
             </Grid>
-            <Grid Grid.Row="4" VerticalAlignment="Center" Background="#44444444" Height="110">
-                <TextBlock Text="MIDI Tracks" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="10,5"/>
-                <!--ComboBox x:Name="MidiTracks" VerticalAlignment="Bottom" HorizontalAlignment="Left" Margin="10,8" Width="240" Height="30" Background="#FF444444" SelectionChanged="MidiTracksSelectionChanged">
-                    <ComboBox.ItemTemplate>
-                        <DataTemplate>
-                            <CheckBox x:Name="MidiTrack" Content="{Binding TrackName}" IsChecked="{Binding IsChecked}"/>
-                        </DataTemplate>
-                    </ComboBox.ItemTemplate>
-                </ComboBox>-->
-                <ScrollViewer VerticalAlignment="Bottom" HorizontalAlignment="Left" Margin="10,5" Width="240" Height="80" Background="#FF444444">
-                    <ItemsControl x:Name="MidiTracks">
-                        <ItemsControl.ItemTemplate>
-                            <DataTemplate>
-                                <CheckBox x:Name="MidiTrack" Content="{Binding TrackName}" IsChecked="{Binding IsChecked}"/>
-                            </DataTemplate>
-                        </ItemsControl.ItemTemplate>
-                    </ItemsControl>
-                </ScrollViewer>
-            </Grid>
-            <Grid Grid.Row="5" VerticalAlignment="Center" Background="#44444444" Height="120">
-                <TextBlock Text="Settings" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="10,5"/>
-                <TextBlock x:Name="Scale" Text="Scale: Chromatic" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="10,25"/>
-                <CheckBox x:Name="EnableVibrato" Content="Enable vibrato" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="10,45,0,0" ClickMode="Press"/>
-                <CheckBox x:Name="TransposeNotes" Content="Transpose notes" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="10,65,0,0" ClickMode="Press"/>
-                <TextBlock Text="Playback speed:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="10,91,0,0"/>
-                <ComboBox x:Name="MidiSpeeds" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="115,85,0,0" Width="65" Height="30" Background="#FF444444"
-                          SelectedItem="{Binding Path=SelectedMidiSpeed, Mode=TwoWay}"
-                          DisplayMemberPath="SpeedName"/>
-                <CheckBox x:Name="PlayThroughSpeakers" Content="Play MIDI through speakers" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="10,85,0,0" ClickMode="Press" Visibility="Hidden"/>
-            </Grid>
+
+            <!-- Version Info -->
+            <TextBlock Grid.Row="2" Text="{Binding Path=VersionString}" 
+                       HorizontalAlignment="Center" Margin="0,15,0,0" 
+                       Foreground="#888888" FontSize="12"/>
         </Grid>
-        <TextBlock Text="{Binding Path=VersionString}" Grid.Column="1" Grid.Row="3"/>
     </Grid>
 </Window>

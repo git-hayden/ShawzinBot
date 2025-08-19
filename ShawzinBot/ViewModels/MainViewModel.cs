@@ -4,6 +4,8 @@ using System.Linq;
 using System.Reflection;
 using System.Timers;
 using System.Net;
+using System.Collections.Generic;
+using System.Windows.Forms;
 using Caliburn.Micro;
 using Melanchall.DryWetMidi.Core;
 using Melanchall.DryWetMidi.Devices;
@@ -16,7 +18,7 @@ using Newtonsoft.Json;
 
 namespace ShawzinBot.ViewModels
 {
-    public class MainViewModel : Screen
+    public class MainViewModel : Caliburn.Micro.Screen
     {
         #region Private Variables
 
@@ -31,13 +33,16 @@ namespace ShawzinBot.ViewModels
         private BindableCollection<MidiInputModel> _midiInputs = new BindableCollection<MidiInputModel>();
         private BindableCollection<MidiTrackModel> _midiTracks = new BindableCollection<MidiTrackModel>();
         private BindableCollection<MidiSpeedModel> _midiSpeeds = new BindableCollection<MidiSpeedModel>();
+        private BindableCollection<MidiFileModel> _midiPlaylist = new BindableCollection<MidiFileModel>();
         private MidiInputModel _selectedMidiInput;
         private MidiSpeedModel _selectedMidiSpeed;
+        private MidiFileModel _selectedMidiFile;
 
         private bool _enableVibrato = true;
         private bool _transposeNotes = true;
         private bool _playThroughSpeakers;
         private bool _ignoreSliderChange;
+        private string _currentFolder = "";
 
         private string[] ScaleArray = {
             "Chromatic",
@@ -54,7 +59,7 @@ namespace ShawzinBot.ViewModels
         private System.Collections.Generic.IEnumerable<TrackChunk> midiTrackChunks;
         private TrackChunk firstTrack;
 
-        private Timer playTimer;
+        private System.Timers.Timer playTimer;
         private OutputDevice device;
         private ITimeSpan playTime = new MidiTimeSpan();
 
@@ -279,6 +284,40 @@ namespace ShawzinBot.ViewModels
             }
         }
 
+        public BindableCollection<MidiFileModel> MidiPlaylist
+        {
+            get => _midiPlaylist;
+            set
+            {
+                _midiPlaylist = value;
+                NotifyOfPropertyChange(() => MidiPlaylist);
+            }
+        }
+
+        public MidiFileModel SelectedMidiFile
+        {
+            get => _selectedMidiFile;
+            set
+            {
+                _selectedMidiFile = value;
+                NotifyOfPropertyChange(() => SelectedMidiFile);
+                if (value != null)
+                {
+                    LoadMidiFile(value.FilePath);
+                }
+            }
+        }
+
+        public string CurrentFolder
+        {
+            get => _currentFolder;
+            set
+            {
+                _currentFolder = value;
+                NotifyOfPropertyChange(() => CurrentFolder);
+            }
+        }
+
         public bool EnableVibrato
         {
             get => _enableVibrato;
@@ -343,43 +382,99 @@ namespace ShawzinBot.ViewModels
 
         #region Methods
 
+        public void OpenFolder()
+        {
+            var folderDialog = new FolderBrowserDialog();
+            folderDialog.Description = "Select folder containing MIDI files";
+            
+            if (folderDialog.ShowDialog() != DialogResult.OK) return;
+
+            CurrentFolder = folderDialog.SelectedPath;
+            MidiPlaylist.Clear();
+            
+            // Get all MIDI files from the folder
+            var midiFiles = Directory.GetFiles(CurrentFolder, "*.mid")
+                .Concat(Directory.GetFiles(CurrentFolder, "*.midi"))
+                .OrderBy(f => Path.GetFileName(f));
+
+            foreach (var file in midiFiles)
+            {
+                var midiFileModel = new MidiFileModel(file);
+                
+                try
+                {
+                    // Analyze the MIDI file for compatibility
+                    var tempMidiFile = MidiFile.Read(file);
+                    var compatibilityResult = MidiCompatibilityChecker.CheckCompatibility(tempMidiFile);
+                    
+                    midiFileModel.UpdateCompatibilityInfo(
+                        compatibilityResult.TrackCount,
+                        compatibilityResult.Duration,
+                        compatibilityResult.IsCompatible,
+                        compatibilityResult.CompatibilityNotes
+                    );
+                    
+                    // MidiFile doesn't have Dispose method, just let it go out of scope
+                }
+                catch (Exception ex)
+                {
+                    midiFileModel.UpdateCompatibilityInfo(0, 0, false, string.Format("Error: {0}", ex.Message));
+                }
+                
+                MidiPlaylist.Add(midiFileModel);
+            }
+
+            // Select the first file if available
+            if (MidiPlaylist.Any())
+            {
+                SelectedMidiFile = MidiPlaylist.First();
+            }
+        }
+
         public void OpenFile()
         {
-            var openFileDialog = new OpenFileDialog();
-			openFileDialog.Filter = "MIDI file|*.mid;*.midi"; // Filter to only midi files
-            if (openFileDialog.ShowDialog() != true) return;
+            var openFileDialog = new System.Windows.Forms.OpenFileDialog();
+            openFileDialog.Filter = "MIDI file|*.mid;*.midi"; // Filter to only midi files
+            if (openFileDialog.ShowDialog() != System.Windows.Forms.DialogResult.OK) return;
 
+            LoadMidiFile(openFileDialog.FileName);
+        }
+
+        private void LoadMidiFile(string filePath)
+        {
             CloseFile();
             MidiTracks.Clear();
 
-            midiFile = MidiFile.Read(openFileDialog.FileName);
-            SongName = Path.GetFileNameWithoutExtension(openFileDialog.FileName);
-
-            tempoMap = midiFile.GetTempoMap();
-
-            TimeSpan midiFileDuration = midiFile.GetDuration<MetricTimeSpan>();
-            TotalTime = midiFileDuration.ToString("m\\:ss");
-            MaximumTime = midiFileDuration.TotalSeconds;
-            UpdateSlider(0);
-            CurrentTime = "0:00";
-            midiTrackChunks = midiFile.GetTrackChunks();
-
-            if (midiTrackChunks.Count() > 1)
+            try
             {
-                firstTrack = midiTrackChunks.FirstOrDefault();
-                midiFile.Chunks.Remove(firstTrack);
-                MidiTracks.Add(new MidiTrackModel(firstTrack, true));
+                midiFile = MidiFile.Read(filePath);
+                SongName = Path.GetFileNameWithoutExtension(filePath);
 
-                foreach (TrackChunk track in midiFile.GetTrackChunks())
+                tempoMap = midiFile.GetTempoMap();
+
+                TimeSpan midiFileDuration = midiFile.GetDuration<MetricTimeSpan>();
+                TotalTime = midiFileDuration.ToString("m\\:ss");
+                MaximumTime = midiFileDuration.TotalSeconds;
+                UpdateSlider(0);
+                CurrentTime = "0:00";
+                midiTrackChunks = midiFile.GetTrackChunks();
+
+                // Enable ALL tracks by default instead of just the first
+                foreach (TrackChunk track in midiTrackChunks)
                 {
-                    MidiTracks.Add(new MidiTrackModel(track));
+                    MidiTracks.Add(new MidiTrackModel(track, true));
+                }
+
+                // Store the first track for reference
+                if (midiTrackChunks.Any())
+                {
+                    firstTrack = midiTrackChunks.First();
                 }
             }
-            else
+            catch (Exception ex)
             {
-                firstTrack = midiTrackChunks.FirstOrDefault();
-                midiFile.Chunks.Remove(firstTrack);
-                MidiTracks.Add(new MidiTrackModel(firstTrack, true));
+                System.Windows.MessageBox.Show(string.Format("Error loading MIDI file: {0}", ex.Message), "Error", 
+                    System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Error);
             }
         }
 
@@ -418,8 +513,8 @@ namespace ShawzinBot.ViewModels
                 }
 
                 midiFile.Chunks.Clear();
-                midiFile.Chunks.Add(firstTrack);
 
+                // Add all enabled tracks
                 foreach (MidiTrackModel trackModel in MidiTracks)
                 {
                     if (trackModel.IsChecked)
@@ -463,7 +558,7 @@ namespace ShawzinBot.ViewModels
                 PlayPauseIcon = "Pause";                
 
                 ActionManager.OnSongPlay();
-                playTimer = new Timer();
+                playTimer = new System.Timers.Timer();
                 playTimer.Interval = 100;
                 playTimer.Elapsed += new ElapsedEventHandler(PlayTimerElapsed);
                 playTimer.Start();

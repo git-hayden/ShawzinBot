@@ -124,6 +124,8 @@
     <Compile Include="Models\GitVersion.cs" />
     <Compile Include="Models\MidiTrackModel.cs" />
     <Compile Include="Models\MidiInputModel.cs" />
+    <Compile Include="Models\MidiFileModel.cs" />
+    <Compile Include="Models\MidiCompatibilityChecker.cs" />
     <Compile Include="ViewModels\MainViewModel.cs" />
     <Compile Include="Views\MainView.xaml.cs">
       <DependentUpon>MainView.xaml</DependentUpon>
