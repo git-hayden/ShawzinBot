@@ -34,8 +34,13 @@
     </Window.Resources>
     
     <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="40"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        
         <!-- Title Bar -->
-        <Grid Grid.Row="0" Background="{StaticResource OrangeGradient}" Height="40">
+        <Grid Grid.Row="0" Background="{StaticResource OrangeGradient}">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="Auto"/>
@@ -118,6 +123,7 @@
                                    Margin="15,15,15,10"/>
                         
                         <ListBox Grid.Row="1" x:Name="MidiPlaylist" 
+                                 SelectedItem="{Binding SelectedMidiFile, Mode=TwoWay}"
                                  Background="Transparent" BorderThickness="0"
                                  Margin="10,0,10,10">
                             <ListBox.ItemTemplate>
@@ -160,6 +166,7 @@
                         Background="#22FFFFFF" CornerRadius="5">
                     <Grid Margin="15">
                         <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
                             <RowDefinition Height="Auto"/>
                             <RowDefinition Height="Auto"/>
                             <RowDefinition Height="Auto"/>
@@ -246,8 +253,29 @@
                             </Grid>
                         </Border>
 
+                        <!-- Scale Display - Prominently positioned -->
+                        <Border Grid.Row="3" Background="#FFD69016" CornerRadius="3" 
+                                Padding="15" Margin="0,0,0,15">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                
+                                <StackPanel Grid.Column="0">
+                                    <TextBlock Text="Current Scale" FontWeight="Bold" Margin="0,0,0,5" Foreground="White"/>
+                                    <TextBlock x:Name="Scale" Text="Chromatic" FontSize="16" FontWeight="Bold" Foreground="White"/>
+                                </StackPanel>
+                                
+                                <StackPanel Grid.Column="1" Orientation="Vertical" VerticalAlignment="Center">
+                                    <TextBlock Text="Important!" FontWeight="Bold" Foreground="White" FontSize="12"/>
+                                    <TextBlock Text="Scale affects how notes sound" Foreground="White" FontSize="10"/>
+                                </StackPanel>
+                            </Grid>
+                        </Border>
+
                         <!-- MIDI Tracks -->
-                        <Border Grid.Row="3" Background="#44444444" CornerRadius="3" 
+                        <Border Grid.Row="4" Background="#44444444" CornerRadius="3" 
                                 Padding="15" Margin="0,0,0,15">
                             <StackPanel>
                                 <TextBlock Text="MIDI Tracks" FontWeight="Bold" Margin="0,0,0,10"/>
@@ -266,7 +294,7 @@
                         </Border>
 
                         <!-- Settings -->
-                        <Border Grid.Row="4" Background="#44444444" CornerRadius="3" Padding="15">
+                        <Border Grid.Row="5" Background="#44444444" CornerRadius="3" Padding="15">
                             <Grid>
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="*"/>
@@ -275,7 +303,6 @@
                                 
                                 <StackPanel Grid.Column="0">
                                     <TextBlock Text="Settings" FontWeight="Bold" Margin="0,0,0,10"/>
-                                    <TextBlock x:Name="Scale" Text="Scale: Chromatic" Margin="0,0,0,5"/>
                                     <CheckBox x:Name="EnableVibrato" Content="Enable vibrato" 
                                               Margin="0,2" Foreground="White"/>
                                     <CheckBox x:Name="TransposeNotes" Content="Transpose notes" 

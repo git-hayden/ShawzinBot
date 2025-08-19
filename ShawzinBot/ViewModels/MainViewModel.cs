@@ -28,7 +28,7 @@ namespace ShawzinBot.ViewModels
         private string _currentTime = "0:00";
         private string _totalTime = "0:00";
         private string _playPauseIcon = "Play";
-        private string _scale = "Scale: Chromatic";
+        private string _scale = "Chromatic";
         
         private BindableCollection<MidiInputModel> _midiInputs = new BindableCollection<MidiInputModel>();
         private BindableCollection<MidiTrackModel> _midiTracks = new BindableCollection<MidiTrackModel>();
